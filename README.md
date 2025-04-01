@@ -15,3 +15,6 @@ REAPER用のスクリプトで、MIDIファイルを空アイテムに変換し�
 ## クレジット
 - Original script: midi2item by ePi
 - Modified by: XBACT
+
+## ライセンス
+MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照してください。
