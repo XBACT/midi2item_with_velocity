@@ -1,8 +1,3 @@
---[[
-    midi2item_with_velocity by XBACT (based on midi2item by ePi)
-    MIDIの音量（ベロシティ）を反映したバージョン
-]]
-
 local R = reaper
 
 local function print(...)
@@ -17,7 +12,6 @@ local function createNewItem(track, st, ed, pitch, velocity)
     R.SetMediaItemPosition(mi, st, false)
     R.SetMediaItemLength(mi, ed - st, false)
     R.SetMediaItemTakeInfo_Value(take, "D_PITCH", pitch)
-    -- ベロシティ (0-127) をアイテムボリューム (0.0-2.0) に変換
     local vol = (velocity / 127) * 2.0
     R.SetMediaItemInfo_Value(mi, "D_VOL", vol)
     return mi
@@ -39,7 +33,6 @@ xpcall(function()
         end
     end
 
-    -- 選択アイテムがない場合の処理（元のコードと同じ）
     if next(tracks) == nil then
         for _, track in (function(proj)
             local i = -1
@@ -97,10 +90,9 @@ xpcall(function()
                     R.TimeMap2_QNToTime(proj, st_qn),
                     R.TimeMap2_QNToTime(proj, ed_qn),
                     pitch,
-                    velocity  -- ベロシティを追加
+                    velocity
                 }
 
-                -- ループ処理（元のコードと同じ）
                 if note[2] <= item_st then
                     st_qn = st_qn + source_length
                     ed_qn = ed_qn + source_length
@@ -163,7 +155,7 @@ xpcall(function()
             R.InsertTrackAtIndex(idx, false)
             local track = R.GetTrack(proj, idx)
             for _, note in ipairs(tr) do
-                createNewItem(track, note[1], note[2], note[3], note[4]) -- ベロシティを渡す
+                createNewItem(track, note[1], note[2], note[3], note[4])
             end
         end
 
@@ -177,4 +169,5 @@ end, function(err)
 end)
 
 R.UpdateArrange()
+
 R.Undo_EndBlock2(proj, "midi2item_with_velocity", -1)
